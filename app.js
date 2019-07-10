@@ -55,6 +55,7 @@ $(document).ready(function(){
             var results = nyt.response.docs
             if(results.length > 0) {
                 console.log(nyt);
+                $("#articles").empty()
                 $(".new-content").show()        // show articles section once nyt object returns
                 if(results.length < limit) {    // if there less articles than limit requested, use amt returned
                     limit = results.length
@@ -67,7 +68,7 @@ $(document).ready(function(){
                     var link = $("<a>").addClass("card-link").attr("href",results[i].web_url).text("Full Article")
                     cardBody.append(title,text,link)
                     card.append(cardBody)
-                    $("#articles").append(card)
+                    $("#articles").prepend(card)
                 }
             }
             else {                              // if no articles are found, display a message
