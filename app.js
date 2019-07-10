@@ -21,13 +21,27 @@ $(document).ready(function(){
         return newDate
     }
 
+    var prepStr = function(str) {
+        var newStr = "";
+        for(var i=0;i<str.length;i++){
+            var cc = str.substring(i,i+1)
+            if (cc==" "){
+                newStr += "+"
+            }
+            else {
+                newStr += cc
+            }
+        }
+        return newStr
+    }
+
     
     $("#submit").on("click", function () {
 
         event.preventDefault()      // prevent usual submit functionality 
 
         var api_key = "dd7IdMo4wBX4K2d8GNVX4dK4c75NqNKJ"
-        var q = $("#search").val()                                  
+        var q = prepStr($("#search").val())                                  
         var fq = $("#newsDesk").val()                            
         var begin = setDate($("#startYear").val())                // desired input "20120101"
         var end = setDate($("#endYear").val())                     
@@ -38,23 +52,33 @@ $(document).ready(function(){
             url: queryURL,
             method: "GET",
         }).then(function(nyt) {
-            console.log(nyt);
-            $(".new-content").show()
             var results = nyt.response.docs
-            for(var i=0; i<limit; i++){     // return only amt of articles specified by limit
-                var card = $("<div>").addClass("card").attr("style", "width:100%")
-                var cardBody = $("<div>").addClass("card-body")
-                var title = $("<h5>").addClass("card-title").text(results[i].headline.main)
-                var text = $("<p>").addClass("card-title").text(results[i].abstract)
-                var link = $("<a>").addClass("card-link").attr("href",results[i].web_url).text("Full Article")
-                cardBody.append(title,text,link)
-                card.append(cardBody)
-                $("#articles").append(card)
+            if(results.length > 0) {
+                console.log(nyt);
+                $(".new-content").show()        // show articles section once nyt object returns
+                if(results.length < limit) {    // if there less articles than limit requested, use amt returned
+                    limit = results.length
+                }
+                for(var i=0; i<limit; i++){     // return only amt of articles specified by limit
+                    var card = $("<div>").addClass("card").attr("style", "width:100%")
+                    var cardBody = $("<div>").addClass("card-body")
+                    var title = $("<h5>").addClass("card-title").text(results[i].headline.main)
+                    var text = $("<p>").addClass("card-text").text(results[i].abstract)
+                    var link = $("<a>").addClass("card-link").attr("href",results[i].web_url).text("Full Article")
+                    cardBody.append(title,text,link)
+                    card.append(cardBody)
+                    $("#articles").append(card)
+                }
+            }
+            else {                              // if no articles are found, display a message
+                var text = $("<p>").text("No results found...").css("color","gray")
+                $("#articles").html(text)
+
             }
         })
     });
 
-    $("#clearResults").on("click", function () {
+    $("#clear").on("click", function () {
         $("#articles").empty()
         $(".new-content").hide()
     });
