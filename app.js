@@ -22,7 +22,8 @@ $(document).ready(function(){
     }
 
     var prepStr = function(str) {
-        var newStr = "";
+        // allow for search queries with spaces btw words
+        var newStr = "";                        
         for(var i=0;i<str.length;i++){
             var cc = str.substring(i,i+1)
             if (cc==" "){
@@ -38,7 +39,7 @@ $(document).ready(function(){
     
     $("#submit").on("click", function () {
 
-        event.preventDefault()      // prevent usual submit functionality 
+        event.preventDefault()                   // prevent usual submit functionality 
 
         var api_key = "dd7IdMo4wBX4K2d8GNVX4dK4c75NqNKJ"
         var q = prepStr($("#search").val())                                  
